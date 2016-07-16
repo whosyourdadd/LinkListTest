@@ -136,11 +136,11 @@ List* bubblesort(List** head)    //pointer to pointer
 }
 
 int main (int argc , char const *argv[]){
-        List **head  = Init_LinkList(10);
+        List *head  = Init_LinkList(9);
         List *a = GetKeyNode(head,4);
         List *b = GetKeyNode(head,7);
         ShowAllOfNode(head);
-        swap_list(head,a,b);
+        swap_list(&head,a,b);
         ShowAllOfNode(head);
         //bubblesort(head);
         //ShowAllOfNode(head);
