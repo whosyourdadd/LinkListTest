@@ -77,8 +77,6 @@ void swap_list(List **head, List *a, List *b) {
         //return 0;
 }
 unsigned int GetRandVal(const unsigned int NodeNumber){
-        
-        //#define GetRandNum(NodeNum)  (rand()%NodeNum)+1
         return (rand()%NodeNumber+1);
 }
 
@@ -98,20 +96,16 @@ void Random_shuffle(List *head,const unsigned int NodeNumber){
 }
 
 List  *Init_LinkList(const unsigned int NodeNumber){
-        List  *curr , *temp_Head;
-       
+        List  *curr , *temp_Head;       
         unsigned int i;
         temp_Head = LinkListCreate(NodeNumber);
         curr = temp_Head;
-        //printf("1. curr %x  val  %d,next %x \n",curr ,curr->val, curr->next);
         for(i = NodeNumber-1;i > 0; i--){
-                //curr->next = LinkListCreate(i);
                 List *tmp = LinkListCreate(i);
                 insert_node(curr,tmp);
                 curr = curr->next;
         }
         Random_shuffle(&temp_Head,NodeNumber);
-        //printf("temp_Head %x \n",temp_Head);
         return temp_Head;
 }
 
