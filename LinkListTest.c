@@ -1,11 +1,26 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
+#include <time.h>
 #define true 1
 #define false 0
 typedef struct _List{
        struct  _List *next;
        int val;
 }List;
+
+List  *GetKeyNode(const List *head,unsigned int val){
+    List *curr = head;
+    while(curr != NULL){
+        if( curr->val == val){
+            //printf("get \n");
+            return curr;
+        }
+        curr = curr->next;
+    }
+    printf("NULL \n");
+    return NULL;
+}
 
 List *LinkListCreate(const unsigned int  InputVal){
         List  *temp = malloc(sizeof(List));
@@ -19,25 +34,6 @@ void insert_node(List* n1, List* n2) // 將 n2 插入在 n1 之後
     n1->next = n2;
 }
 
-
-List  *Init_LinkList(const unsigned int NodeNumber){
-        List  *curr , *temp_Head;
-        unsigned int i;
-        temp_Head = LinkListCreate(NodeNumber);
-        curr = temp_Head;
-        //printf("1. curr %x  val  %d,next %x \n",curr ,curr->val, curr->next);
-        for(i = NodeNumber-1;i > 0; i--){
-                //curr->next = LinkListCreate(i);
-                List *tmp = LinkListCreate(i);
-                insert_node(curr,tmp);
-                curr = curr->next;
-                //printf("%d. curr %x  val  %d,next %x \n",i,curr ,curr->val, curr->next);
-                //printf("1. curr %x  val  %d,next %x \n",curr ,curr->val, curr->next);
-                //printf("2. curr %x  val  %d,next %x \n",curr ,curr->val, curr->next);
-        }
-        //printf("temp_Head %x \n",temp_Head);
-        return temp_Head;
-}
 
 void swap_list(List **head, List *a, List *b) {
         List *prev_A =NULL,*prev_B =NULL;
@@ -80,6 +76,45 @@ void swap_list(List **head, List *a, List *b) {
         //}
         //return 0;
 }
+unsigned int GetRandVal(const unsigned int NodeNumber){
+        
+        //#define GetRandNum(NodeNum)  (rand()%NodeNum)+1
+        return (rand()%NodeNumber+1);
+}
+
+void Random_shuffle(List *head,const unsigned int NodeNumber){
+        
+        unsigned int i ;
+        unsigned int randnum = GetRandVal(NodeNumber);
+        unsigned int Ra,Rb;
+        printf("Random_shuffle time %d\n",randnum);
+        for(i=0;i<randnum;i++){
+                    Ra = GetRandVal(NodeNumber);
+                    Rb = GetRandVal(NodeNumber);
+                    List *a = GetKeyNode(head,Ra);
+                    List *b = GetKeyNode(head,Rb);
+                    swap_list(&head,a,b);
+        }
+}
+
+List  *Init_LinkList(const unsigned int NodeNumber){
+        List  *curr , *temp_Head;
+       
+        unsigned int i;
+        temp_Head = LinkListCreate(NodeNumber);
+        curr = temp_Head;
+        //printf("1. curr %x  val  %d,next %x \n",curr ,curr->val, curr->next);
+        for(i = NodeNumber-1;i > 0; i--){
+                //curr->next = LinkListCreate(i);
+                List *tmp = LinkListCreate(i);
+                insert_node(curr,tmp);
+                curr = curr->next;
+        }
+        Random_shuffle(&temp_Head,NodeNumber);
+        //printf("temp_Head %x \n",temp_Head);
+        return temp_Head;
+}
+
 List  *GetTrailNode(const List *head){
     List *curr = head;
     while(curr != NULL){
@@ -88,61 +123,46 @@ List  *GetTrailNode(const List *head){
     return curr;
 }
 
-List  *GetKeyNode(const List *head,unsigned int val){
-    List *curr = head;
-    while(curr != NULL){
-        if( curr->val == val){
-            //printf("get \n");
-            return curr;
-        }
-        curr = curr->next;
-    }
-    printf("NULL \n");
-    return NULL;
-}
+
 
 void ShowAllOfNode(const List **head){
         List  *curr = head;
         printf("Node val: ");
         do{
-                printf("  %d ",curr->val );
+                printf("%d,",curr->val );
                 curr = curr->next;
         }while(curr != NULL);
         printf("\n" );
 }
 
-List* bubblesort(List** head)    //pointer to pointer
+List* bubblesort(const List **head)    //pointer to pointer
 {
     unsigned char flag = true;
     while(flag) {
-        List* current = head;
+        List* current = *head;
         List* prev = NULL;
         flag = false;
-        while(current->next != NULL) {
+        while(current != NULL && current->next !=NULL) {
             if (current->val > current->next->val) {
                 flag = true;
-                //current = swap(current, current->next);
                 swap_list(head,current,current->next);
-                //if (prev != NULL)
-                //    prev->next = current;
-                //else
-                    //head = current;
             }
-            //prev = current;
-            current = current->next;
+            current = current->next;         
         }
     }
     return head;
 }
 
 int main (int argc , char const *argv[]){
-        List *head  = Init_LinkList(9);
-        List *a = GetKeyNode(head,4);
-        List *b = GetKeyNode(head,7);
+        srand(time(NULL));
+        if(argc == 1){
+            printf("please input node number\n");
+            return -1;
+        }
+        const unsigned int NodeNum = atoi(argv[1]);
+        List *head  = Init_LinkList(NodeNum);
         ShowAllOfNode(head);
-        swap_list(&head,a,b);
+        bubblesort(&head);
         ShowAllOfNode(head);
-        //bubblesort(head);
-        //ShowAllOfNode(head);
         return 0;
 }
